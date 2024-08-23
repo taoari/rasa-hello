@@ -13,3 +13,8 @@ rasa run actions --debug
 # test terminal or double click chatbot.html
 curl -X POST http://localhost:5005/webhooks/rest/webhook -d '{"sender": "default", "message": "Hi"}'
 ```
+
+## Rasa Fallback
+
+https://rasa.com/docs/rasa/fallback-handoff/
+
