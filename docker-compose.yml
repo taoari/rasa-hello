@@ -1,7 +1,9 @@
 version: '3.0'
 services:
   core:
-    image: rasa/rasa:3.6.20-full
+    build:
+      dockerfile: Dockerfile
+    image: rasa-hello
     command: run --enable-api --cors="*" --endpoints endpoints_docker.yml
     ports:
       - 5005:5005
@@ -9,9 +11,9 @@ services:
       - ./:/app
 
   actions:
-    # build:
-    #   dockerfile: Dockerfile
-    image: rasa/rasa:3.6.20-full
+    build:
+      dockerfile: Dockerfile
+    image: rasa-hello
     command: run actions 
     ports:
       - 5055:5055
