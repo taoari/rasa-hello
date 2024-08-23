@@ -1,0 +1,4 @@
+.rasa
+.config
+models
+*.pyc
