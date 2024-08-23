@@ -22,6 +22,6 @@ class ActionHelloWorld(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        dispatcher.utter_message(text="Hello World!")
+        dispatcher.utter_message(text="Hello World! (This is a message from custom action)")
 
         return []
