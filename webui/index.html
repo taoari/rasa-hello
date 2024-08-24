@@ -1,2 +1,39 @@
+<!-- Rasa Chat Widget Integration -->
 <div id="rasa-chat-widget" data-websocket-url="http://localhost:5005/socket.io"></div>
 <script src="https://unpkg.com/@rasahq/rasa-chat" type="application/javascript"></script>
+
+<!-- Bootstrap CSS and JS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+    crossorigin="anonymous"></script>
+
+<!-- Script for Handling Markdown/HTML Messages -->
+<script>
+    // Function to unescape HTML entities
+    function unescapeHTML(html) {
+        var textArea = document.createElement('textarea');
+        textArea.innerHTML = html;
+        return textArea.value;
+    }
+
+    // Function to update message bubbles with unescaped HTML
+    function updateMessageBubbles() {
+        // Select all divs with data-qa="conversation-message-bubbles_div"
+        var messageBubbles = document.querySelectorAll('div[data-qa="conversation-message-bubbles_div"]');
+
+        // Iterate over each div
+        messageBubbles.forEach(function (bubble) {
+            // Check if the bubble has not been processed yet
+            if (!bubble.hasAttribute('data-processed')) {
+                bubble.innerHTML = unescapeHTML(bubble.innerHTML);
+                // Mark the bubble as processed
+                bubble.setAttribute('data-processed', 'true');
+            }
+        });
+    }
+
+    // Set an interval to continuously update message bubbles
+    var intervalId = window.setInterval(updateMessageBubbles, 500);
+</script>

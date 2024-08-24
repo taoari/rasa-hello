@@ -1,1 +1,4 @@
+# rasa==3.6.20
+python-dotenv
+
 gradio_client
