@@ -4,6 +4,14 @@
 # See this guide on how to implement these action:
 # https://rasa.com/docs/rasa/custom-actions
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
+import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 # This is a simple example for a custom action which utters "Hello World!"
 
@@ -11,19 +19,15 @@ from typing import Any, Text, Dict, List
 
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
-import os
 
-LOCALHOST = 'host.docker.internal' if os.environ.get('RUN_IN_DOCKER') else 'localhost'
-
+import uuid
 from gradio_client import Client
+logging.getLogger("httpx").setLevel(logging.WARNING) # Disable printing unwanted messages
 
-CACHE = dict(clients={})
+client = Client(os.environ.get('GRADIO_SERVER'))
 
-def _gradio_chat(message, sender_id=None):
-    global CACHE
-    if sender_id not in CACHE['clients']:
-        CACHE['clients']['sender_id'] = Client(f"http://{LOCALHOST}:7860/")
-    client = CACHE['clients']['sender_id']
+def _gradio_chat(message, session_hash=None):
+    client.session_hash = session_hash if session_hash is not None else str(uuid.uuid4())
     
     result = client.predict(
             message,	# str  in 'Message' Textbox component
@@ -47,7 +51,15 @@ class ActionHelloWorld(Action):
         
         sender_id = tracker.current_state()['sender_id']
         user_message = tracker.latest_message.get('text')
-        # dispatcher.utter_message(text=f"I received {user_message} from {sender_id}")
-        dispatcher.utter_message(text=_gradio_chat(user_message))
+        logger.info(f'Received message "{user_message}" from "{sender_id}"')
+        dispatcher.utter_message(text=_gradio_chat(user_message, sender_id))
 
         return []
+    
+if __name__ == '__main__':
+    # client = Client(os.environ.get('GRADIO_SERVER'))
+    print(_gradio_chat('Hello, my name is Alice.', session_hash='123'))
+    print(_gradio_chat('Hello, my name is Bob.', session_hash='456'))
+    print(_gradio_chat('What is my name?', session_hash='123'))
+    print(_gradio_chat('What is my name?', session_hash='456'))
+

@@ -9,6 +9,7 @@ services:
       - 5005:5005
     volumes:
       - ./:/app
+    env_file: .env_docker
 
   actions:
     build:
@@ -19,6 +20,7 @@ services:
       - 5055:5055
     volumes:
       - ./:/app
+    env_file: .env_docker
 
   webui:
     image: python
