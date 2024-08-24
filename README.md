@@ -64,3 +64,8 @@ You can access the demo at [http://localhost:5000/](http://localhost:5000/).
 ### Custom Actions
 
 [Explore Custom Actions](https://github.com/RasaHQ/conversational-ai-course-3.x)
+
+
+### Custom Graph Components
+
+[Explore Custom Graph Components](https://rasa.com/docs/rasa/custom-graph-components/)
