@@ -1,6 +1,6 @@
 import pprint
 import logging
-from typing import Any, Text, Dict, List, Type
+from typing import Optional, Any, Text, Dict, List, Type
 
 from rasa.engine.recipes.default_recipe import DefaultV1Recipe
 from rasa.engine.graph import ExecutionContext, GraphComponent
@@ -90,3 +90,39 @@ class Printer(GraphComponent):
     def process_training_data(self, training_data: TrainingData) -> TrainingData:
         """Processes the training examples in the given training data in-place."""
         return training_data
+
+from rasa.shared.core.domain import State, Domain
+from rasa.shared.core.events import ActionExecuted
+from rasa.core.featurizers.tracker_featurizers import TrackerFeaturizer
+from rasa.core.featurizers.tracker_featurizers import MaxHistoryTrackerFeaturizer
+from rasa.core.featurizers.tracker_featurizers import FEATURIZER_FILE
+from rasa.shared.exceptions import FileIOException
+from rasa.core.policies.policy import PolicyPrediction, Policy, SupportedData
+from rasa.shared.core.trackers import DialogueStateTracker
+from rasa.shared.core.generator import TrackerWithCachedStates
+
+@DefaultV1Recipe.register(
+    DefaultV1Recipe.ComponentType.POLICY_WITHOUT_END_TO_END_SUPPORT, is_trainable=False
+)
+class PolicyPrinter(Printer):
+
+    def train(
+        self,
+        training_trackers: List[TrackerWithCachedStates],
+        domain: Domain,
+        **kwargs: Any,
+    ) -> Resource:
+        return self._resource
+    
+    def predict_action_probabilities(
+        self,
+        tracker: DialogueStateTracker,
+        domain: Domain,
+        rule_only_data: Optional[Dict[Text, Any]] = None,
+        **kwargs: Any,
+    ) -> PolicyPrediction:
+        if self._config['alias']:
+            logger.info(self._config['alias'])
+
+        _messages = dict(tracker=tracker.current_state(), domain=domain.as_dict())
+        logger.info(pprint.pformat(_messages) if self._config['pretty'] else str(_messages))
