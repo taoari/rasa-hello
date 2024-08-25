@@ -10,6 +10,7 @@ load_dotenv()
 
 import os
 import logging
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +53,8 @@ class ActionHelloWorld(Action):
         sender_id = tracker.current_state()['sender_id']
         user_message = tracker.latest_message.get('text')
         logger.info(f'Received message "{user_message}" from "{sender_id}"')
-        dispatcher.utter_message(text=_gradio_chat(user_message, sender_id))
+        text = re.sub(r'\n+', '\n', _gradio_chat(user_message, sender_id))
+        dispatcher.utter_message(text=text)
 
         return []
     
