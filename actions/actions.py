@@ -52,9 +52,17 @@ class ActionHelloWorld(Action):
         
         sender_id = tracker.current_state()['sender_id']
         user_message = tracker.latest_message.get('text')
-        logger.info(f'Received message "{user_message}" from "{sender_id}"')
+        channel = tracker.get_latest_input_channel()
+
+        logger.info(f'Received message: {dict(user_message=user_message, sender_id=sender_id, channel=channel)}"')
         text = re.sub(r'\n+', '\n', _gradio_chat(user_message, sender_id))
-        dispatcher.utter_message(text=text)
+    
+        if channel == 'slack':
+            # NOTE: slack markdown format is different from classic markdown format
+            # refer to https://app.slack.com/block-kit-builder for slack Block Kit Builder
+            dispatcher.utter_message(custom={'text': text, 'mrkdwn': True})
+        else:
+            dispatcher.utter_message(text=text, mrkdwn=True)
 
         return []
     
