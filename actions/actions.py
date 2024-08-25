@@ -62,7 +62,7 @@ class ActionHelloWorld(Action):
             # refer to https://app.slack.com/block-kit-builder for slack Block Kit Builder
             dispatcher.utter_message(custom={'text': text, 'mrkdwn': True})
         else:
-            dispatcher.utter_message(text=text, mrkdwn=True)
+            dispatcher.utter_message(text=text)
 
         return []
     
