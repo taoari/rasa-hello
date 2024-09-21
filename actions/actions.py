@@ -32,11 +32,6 @@ def _gradio_chat(message, session_hash=None):
     
     result = client.predict(
             message,	# str  in 'Message' Textbox component
-            None,	# str (filepath on your computer (or URL) of image) in 'Input' Image component
-            "",	# str  in 'System prompt' Textbox component
-            "auto",	# str  in 'Chat engine' Radio component
-            "auto",	# str  in 'Bot response format' Radio component
-            False,	# bool  in 'Speech Synthesis' Checkbox component
             api_name="/chat"
     )
     return result
