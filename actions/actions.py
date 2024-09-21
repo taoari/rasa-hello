@@ -8,9 +8,12 @@
 # This is a simple example for a custom action which utters "Hello World!"
 
 from typing import Any, Text, Dict, List
+import logging
 
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
+
+logger = logging.getLogger(__name__)
 
 
 class ActionHelloWorld(Action):
@@ -21,7 +24,12 @@ class ActionHelloWorld(Action):
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        
+        sender_id = tracker.current_state()['sender_id']
+        user_message = tracker.latest_message.get('text')
+        channel = tracker.get_latest_input_channel()
+        logger.info(f'Received message: {dict(user_message=user_message, sender_id=sender_id, channel=channel)}"')
 
-        dispatcher.utter_message(text="Hello World! (This is a message from custom action)")
+        dispatcher.utter_message(text=f"You said: {user_message}")
 
         return []
